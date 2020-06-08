@@ -1,500 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html>
+  <head>
+    <title>Google Sheets API Quickstart</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <style>
-        .loader {
-            border: 10px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 10px solid #3498db;
-            width: 40px;
-            height: 40px;
-            -webkit-animation: spin 2s linear infinite;
-            /* Safari */
-            animation: spin 2s linear infinite;
-        }
-        
-        .select {}
-        /* Safari */
-        
-        @-webkit-keyframes spin {
-            0% {
-                -webkit-transform: rotate(0deg);
-            }
-            100% {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-        
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        
-        * {
-            box-sizing: border-box;
-        }
-        /* Create two equal columns that floats next to each other */
-        
-        .column {
-            float: left;
-            width: 50%;
-            padding: 10px;
-        }
-        /* Clear floats after the columns */
-        
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-        /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-        
-        @media screen and (max-width: 600px) {
-            .column {
-                width: 100%;
-            }
-        }
-    </style>
-    <!-- Bootstrap CSS -->
- 
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.21/datatables.min.js"></script>
+  </head>
+  <body>
+    <p>Google Sheets API Quickstart</p>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZÎw1T" crossorigin="anonymous" />
-    <header>
-    </header>
-</head>
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize_button" style="display: none;">Authorize</button>
+    <button id="signout_button" style="display: none;">Sign Out</button>
 
-<body onload = 'cargaTable2()'>
+    <pre id="content" style="white-space: pre-wrap;"></pre>
 
-    <div id="fullbody" class="form-group">
-
-        <div id="meta" class="form-group">
-            <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" tabindex="-1">
-
-                    <div class="alert alert-success" id="success-alert">
-                        <button type="button" class="close" data-dismiss="alert">x</button>
-                        <strong>Guardado </strong>
-                    </div>
-                </form>
-
-            </nav>
-
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-            <nav class="navbar navbar-light bg-light" id="loader">
-                <input class='loader' >
-            <p >  Corroborando usuario y contraseña...</p>
-            </nav>
-            <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" tabindex="-1">
-                    <h3> Tambo La Resistencia </h3>
-                </form>
-            </nav>
-
-            <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" tabindex="-1">
-                    <h4> Teléfono </h4>
-                </form>
-            </nav>
-           
-            <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" tabindex="-1">
-                    <input align="left" class="form-control mr-sm-2" type="number" placeholder="Telefono" aria-label="Search" id="telefono" onkeydown="return event.key != 'Enter'"value ='<?=user?>' disabled/>
-                </form>
-            </nav>
-            <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" tabindex="-1">
-                    <h4> Contraseña </h4>
-                </form>
-            </nav>
-
-            <nav class="navbar navbar-light bg-light">
-
-                <form class="form-inline">
-
-                    <input align="left" class="form-control mr-sm-2" type="password" placeholder="Contraseña" aria-label="Search" id="password" onkeydown="return event.key != 'Enter'"value ='<?=pass?>' disabled/>
-                    <button onClick="lostFocus2(telefono.value,password.value)" class="btn btn-outline-success my-2 my-sm-0" type="button" tabindex="-1" id="butt">
-                        Ingresar
-                    </button>
-                </form>
-                            </nav>
-
-  
-        </div>
-
-        <form>
-
-            <div id="cuerpo" class="form-group">
-            <div id="datospersonales" class="form-group">
-
-            <h6>Información del Socio</h6>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <label>Nombre y apellido</label>
-                                </th>
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="nomap" placeholder="" disabled />
-                                    </div>
-                                </td>
-                            </tr>   
-                            <tr>
-                                <th scope="row">
-                                    <label>Telefono</label>
-                                </th>
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="tel" placeholder="" disabled />
-                                    </div>
-                                </td>
-                            </tr>  
-                        </tbody>
-                    </table>
-            </div>
-
-            <div class="form-group" id="datospedido">
-               <div class="form-group">
-                    <h6>Información del Pedido</h6>
-                                        <form id = "respues">
-
-                    <table class="table"id='pedidos2'>
-                    <thead class="thead-dark">
-                    <tr>
-                    <th scope="col">Producto</th>
-                    <th scope="col">Precio</th>
-                    <th scope="col">Cantidad</th>
-                    <th scope="col">Total</th>
-                    </tr>
-                    </thead>
-                    
-                    </table>
-                                        </form>
-
-                </div>
-                <div class="form-group">
-                    <label for="coment">Comentarios</label>
-                    <input type="text" class="form-control" id="coment" placeholder="" tabindex="-1" />
-                </div>
-                <div class="form-group" hidden>
-                    <label for="proxent">Comentarios</label>
-                    <input type="text" class="form-control" id="proxent" placeholder="" tabindex="-1" />
-                </div>
-                <div class="form-group" hidden>
-                    <label for="proxent">Comentarios</label>
-                    <input type="text" class="form-control" id="idsoc" placeholder="" tabindex="-1" />
-                </div>
-              
-                 <? var days = cargaForm(dist); ?>
-                 <? var ids = cargaFormids(dist); ?>
-
-                <div class="form-group">
-                <label for="dias">Lugar y Fecha de Retiro</label>
-                <select class="form-control" id="dias"tabindex="-1" >
-                <? for (var i = 0; i < days.length; ++i) { ?>
-          <option value= "<?!= ids[i] ?>" ><?!= days[i] ?></option>
-          <? } ?>
-        </select>
-                </div>
-                
-                <button type="button" class="btn btn-primary" id="butta"onclick="cargaProd(tel.value,nomap.value,dias.value,coment.value)"> 
-                    Guardar Pedido
-                </button>            </div>
-    </div>
-    </form>
-    </div>
-    <div class="form-group" id="todook">
-        <h1 id="messajeok">Pedido cargado correctamente, nos comunicaremos por whatsapp el dia previo para recordar la entrega. Muchas gracias!</h1>
-
-    </div>
-    <div class="form-group" id="refresh">
-        <h1 id="myHeader">Recien modificaste tus datos, para poder hacer el pedido te pedimos que esperes 5 minutos y vuelvas a entrar</h1>
-    </div>
     <script type="text/javascript">
-        var socios, soci, lugares, fechas, meses, semanas, status, socie, modif, numberpass;
-        $(document).ready(function() {
-            $("input").click(function() {
-                // Change text of input button 
-                $("#butmodif").prop("value", "Prop Click");
-            });
-        });
+      // Client ID and API key from the Developer Console
+      var CLIENT_ID = '976210868849-730t5mh0itvm4tsrqfdsi9een6rgfqkr.apps.googleusercontent.com';
+      var API_KEY = 'AIzaSyCA2uiABHSVV63jO-9GbuvvAx9d7qq-lXU';
 
-        function showSuccess() {
-            jQuery("#success-alert")
-                .fadeTo(2000, 500)
-                .slideUp(500, function() {
-                    jQuery("#success-alert").slideUp(500);
-                });
-        }
+      // Array of API discovery doc URLs for APIs used by the quickstart
+      var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 
-        function stop() {
-            document.getElementById("fullbody").disabled = true
-        }
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-        $(document).ready(function() {
-            $("#success-alert").hide();
-            $("#butt").show();
+      var authorizeButton = document.getElementById('authorize_button');
+      var signoutButton = document.getElementById('signout_button');
 
-            $("#loader").fadeOut();
-
-            $("#telefono").show();
-            $("#password").show();
-document.getElementById("telefono").disabled = true;
-            document.getElementById("password").disabled = true;
-        });
-var x = document.getElementById("demo");
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
-var lat = position.coords.latitude 
-                            var lng = position.coords.longitude;
-document.getElementById("lat").value =lat
- document.getElementById("lng").value = lng
- var a = document.getElementById('linkdomicilio');
-  var b = document.getElementById('linkdomicilio2');
-                         
-
-var link = 'https://www.google.com/maps?q='
-link = link.concat(lat,",",lng)
-a.setAttribute("href", link);
-b.setAttribute("href", link);
-
-document.getElementById("flag").value = "B"
-editarDatos()
-}
-     
-
-        function setFocusToTelefono() {
-            $("#cuerpo").hide()
-            $("#todook").hide()
-            $("#refresh").hide()
-            $("#loaderdatos").hide()
-
-            // document.getElementById("cuerpo").style.display = "none";
-
-            document.getElementById("telefono").focus();
-            var tel = document.getElementById("telefono").value();
-            var pass = document.getElementById("password").value();
-            cargaTable2 ()
-        }
-
-        function lostFocus2(numero,password) {
-
-     
-        
-            var n = numero.toString();
-            var numberpassword = n.concat(password)
-            numberpass = numberpassword
-            document.getElementById("telefono").disabled = true;
-            document.getElementById("password").disabled = true;
-            $("#butt").hide()
-            $("#loader").show()
-
-            var socio = google.script.run
-                .withSuccessHandler(
-                    function papa(socio) {
-                        socie = socio
-                        if (socio == undefined) {
-
-                            document.getElementById("telefono").value = "";
-                            document.getElementById("password").value = "";
-                            document.getElementById("telefono").focus();
-
-                            alert("telefono incorrecto o contraseña incorrecta. Verifique que esté en formato 341xxxxxxx. Si acaba de cambiar la contraseña, actualice la página")
-                            document.getElementById("telefono").disabled = false;
-                            document.getElementById("password").disabled = false;
-                            $("#butt").show()
-                            $("#loader").hide()
-
-                        } else {
-                            $("#cuerpo").show();
-                            $("#datospedido").show();
-                            $("#meta").hide()
-                document.getElementById("nomap").value = socio.nombre
-                document.getElementById("tel").value = socio.telefono
-                addOption(socio.distnum)
-                        }
-                    })
-                .validarSocie(numberpassword)
-        }
-
-     
-     function addOption(val) {
-     var opt = document.createElement("option");
-opt.value = "3";
-opt.text = "Option: Value 3";
-
-sel.add(opt, null);
-     //sel.remove(val);
-     }
-
-        function guardar() {
-            var select = document.getElementById("dias").value;
-            var str = select.substring(0, 2);
-            if (str == "No") {
-                alert("No tenemos un dia asignado a tu zona. Por ahora, podes ir a retirar a los distritos de Ciudad Futura que figuran en las opciones. Ni bien tengamos un dia asignado a tu zona, te contactaremos por Whatsapp")
-                return
-            }
-            if (select == "") {
-                alert("Oprima el botón que dice ver dias de entrega")
-                return
-            }
-            google.script.run
-                .withSuccessHandler(showSuccess)
-                .formularioPedidos(
-
-                    $("#telefono").val(),
-                    $("#nomap").val(),
-                    $("#dias").val(),
-                    $("#cantidad").val(),
-                    $("#coment").val()
-                );
-            $("#fullbody").hide();
-            $("form").trigger("reset");
-            $("#cod").focus();
-            $("#todook").show();
-
-        }
-
-        function guardarDatosPersonales() {
-
-            google.script.run
-                .withSuccessHandler(showSuccess)
-                .actualizarDatos(
-
-                    $("#nomap").val(),
-                    $("#telefono").val(),
-                    $("#horario").val(),
-                    $("#ciudad").val(),
-                    $("#calle").val(),
-                    $("#numcalle").val(),
-                    $("#piso").val(),
-                    $("#comenv").val(),
-                    $("#ciudad").val()
-                );
-
-        }
-    function cargaTable2 (){
-     
-            $("#refresh").hide()
-            $("#loaderdatos").hide()
-
-            // document.getElementById("cuerpo").style.display = "none";
-
-           // document.getElementById("telefono").focus();
-            //var tel = document.getElementById("telefono").value();
-            //var pass = document.getElementById("password").value();
- $("#pedidos2").find("tbody").empty();
-      google.script.run
-        .withSuccessHandler(function recibirDatos(pedidos) {
-        var largo = pedidos.length
-          for(var e =0; e <largo; e++)  
-          {
-           agregarFilax(pedidos[e])
-           }
-           $("#pedidos2")
-          .append(
-            $("<tr>")
-              
-              .append(
-                $("<td>").text("Total"),
-                $("<td>").text("$"),
-                $("<td>").text(""),
-                $("<td>").text("")
-             )
-          );
-          
-        })
-            .cargarProductos();
-            }
-               function agregarFilax(pedido) {
-        $("#pedidos2")
-         // .find("tbody")
-          .append(
-            $("<tr>")
-              .data(pedido)
-              .append(
-            
-                $("<td>").text(pedido.nombre),
-                $("<td>").text(pedido.precio),
-                $("<td> <select class='custom-select custom-select-lg mb-3' id='cantidad'><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select></td>"),
-                $("<td></td>")
-
-
-            )
-          );
-      }
-      jQuery(document).on('change', 'select', function() {
-    var total = 0;
-    $('#pedidos2 tr:not(:first)').each(function(i,item){ 
-      var tds = $(item).find('td');
-      var qty = parseFloat($($(tds[2]).find('select')[0]).val()); 
-      
-			if($(tds[0]).text() == "Total"){
-        $(tds[2]).text(total);
-      }else {
-        var bankColValue = parseFloat($(tds[1]).text());
-        var colSubTotal = $(tds[3]);
-      	var valItem = bankColValue * (isNaN(qty)? 0: qty);
-        valItem = parseFloat(valItem)
-        colSubTotal.text(valItem);
-        total=parseFloat(total)
-        total += valItem;
+      /**
+       *  On load, called to load the auth2 library and API client library.
+       */
+      function handleClientLoad() {
+        gapi.load('client:auth2', initClient);
       }
 
-    });
-});
-function cargaProd(tel,nomap,dias,comen) 
-{ 
-// var nomap = document.getElementById("nomap").value()
+      /**
+       *  Initializes the API client library and sets up sign-in state
+       *  listeners.
+       */
+      function initClient() {
+        gapi.client.init({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES
+        }).then(function () {
+          // Listen for sign-in state changes.
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
- var tot =parseFloat("0")
-    var tabel = document.getElementById('pedidos2');
-    var rijen = tabel.rows.length;
-var array=[]
-    for (i = 0; i < rijen; i++){
-        var inputs = tabel.rows.item(i).getElementsByTagName("select");
-        var inputslengte = inputs.length;
+          // Handle the initial sign-in state.
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+          authorizeButton.onclick = handleAuthClick;
+          signoutButton.onclick = handleSignoutClick;
+        }, function(error) {
+          appendPre(JSON.stringify(error, null, 2));
+        });
+      }
 
-        for(var j = 0; j < inputslengte; j++){
-            var inputval = inputs[j].value;                
-           array.push(inputval);
-           tot=parseFloat(inputval)+tot
-        }            
-    }  
-    
-    if (tot==0)
-    {
-    alert("No ha seleccionado ningún producto")
-    return
-    }
-    $("#fullbody").hide();
-            $("form").trigger("reset");
-            $("#cod").focus();
-            $("#todook").show();
+      /**
+       *  Called when the signed in status changes, to update the UI
+       *  appropriately. After a sign-in, the API is called.
+       */
+      function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          authorizeButton.style.display = 'none';
+          signoutButton.style.display = 'block';
+          listMajors();
+        } else {
+          authorizeButton.style.display = 'block';
+          signoutButton.style.display = 'none';
+        }
+      }
 
-google.script.run.cargaProductos(array,nomap,tel,dias,comen)
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+      }
 
-}
-</script>
+      /**
+       *  Sign out the user upon button click.
+       */
+      function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+      }
 
-</body>
+      /**
+       * Append a pre element to the body containing the given message
+       * as its text node. Used to display the results of the API call.
+       *
+       * @param {string} message Text to be placed in pre element.
+       */
+      function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+      }
 
+      /**
+       * Print the names and majors of students in a sample spreadsheet:
+       * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+       */
+      function listMajors() {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+          range: 'Class Data!A2:E',
+        }).then(function(response) {
+          var range = response.result;
+          if (range.values.length > 0) {
+            appendPre('Name, Major:');
+            for (i = 0; i < range.values.length; i++) {
+              var row = range.values[i];
+              // Print columns A and E, which correspond to indices 0 and 4.
+              appendPre(row[0] + ', ' + row[4]);
+            }
+          } else {
+            appendPre('No data found.');
+          }
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+      }
+
+    </script>
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
 </html>
